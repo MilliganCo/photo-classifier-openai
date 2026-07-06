@@ -1,29 +1,55 @@
-# Photo Classifier OpenAI
+# Clothing Photo Classifier
 
-## Описание
+Python utility that classifies batches of clothing photos with an OpenAI vision model and saves consistently named copies.
 
-Набор экспериментальных Python-скриптов для классификации фотографий одежды и автоматического переименования файлов по единому шаблону. Проект сочетает компьютерное зрение и LLM-подсказки: в разных версиях используются OpenAI API, YOLO и простые GUI-диалоги для пакетной обработки папок с изображениями.
+## What it does
 
-## Что внутри
+- accepts a folder from the command line or a native folder picker;
+- processes JPG, PNG and WebP images in batches;
+- classifies each photo as full-body (`_Main`), partial/angle (`_Angle`) or close-up (`_Detail`);
+- detects a shared primary color from the first batch;
+- creates deterministic marketplace-oriented filenames;
+- preserves originals and writes copies to `renamed_files/`.
 
-- `Classifier.py` — базовая версия с классификацией и формированием нового имени файла;
-- `Classifier2.py` / `Classifier4.py` — варианты с подключением YOLO для распознавания кадра и ракурса;
-- `Classifier3.py` / `Classifier5.py` — более поздние версии с batched-классификацией и JSON-ответами;
-- `yolov8x.pt` — крупная локальная модель YOLO, в репозиторий не публикуется.
-
-## Идея проекта
-
-Скрипты помогают привести папку с товарными изображениями к предсказуемой структуре имён, например по типу кадра, цвету, индексу изображения и предполагаемому артикулу. Это удобно для подготовки контента к маркетплейсам и внутренним фотопайплайнам.
-
-## Запуск
+## Install
 
 ```bash
-pip install openai pillow ultralytics
-python Classifier.py
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
-Для корректной работы перед запуском нужно вручную указать свой `OPENAI_API_KEY` и при необходимости скачать модель YOLO.
+Set the API key locally. Never put it in source code:
 
-## Статус
+```powershell
+$env:OPENAI_API_KEY = "your-key"
+```
 
-WIP. Репозиторий опубликован как серия рабочих прототипов; реальные API-ключи при публикации подменяются безопасными плейсхолдерами.
+## Run
+
+```bash
+python main.py "C:\path\to\photos" --barcode 4600000000000
+```
+
+Optional arguments:
+
+```bash
+python main.py --model gpt-4o --batch-size 10 --barcode 4600000000000
+```
+
+Without a folder argument, the application opens a folder picker.
+
+## Version cleanup
+
+The numbered `Classifier.py` through `Classifier5.py` experiments were consolidated into the single `main.py` entry point on 2026-07-06.
+
+## Safety and limitations
+
+The tool sends selected images to the configured OpenAI API. Do not process personal or confidential photos without an appropriate data policy. Model classifications should be reviewed before downstream publication.
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+MIT is recommended for the source code. Model terms and rights to processed images remain separate obligations.
