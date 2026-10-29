@@ -1,5 +1,7 @@
 # Clothing Photo Classifier
 
+> Public experimental source: see [PUBLICATION.md](PUBLICATION.md) for actual checks, known defects, restored modules and operational limits. Earlier audit decisions are historical.
+
 Python utility that classifies batches of clothing photos with an OpenAI vision model and saves consistently named copies.
 
 ## What it does
